@@ -1,0 +1,18 @@
+{
+  "name": "Life Reset",
+  "short_name": "Life Reset",
+  "description": "Ton tableau de bord personnel de progression",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1020",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

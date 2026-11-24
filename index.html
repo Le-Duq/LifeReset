@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Ton tableau de bord personnel Life Reset.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>Life Reset</title>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">LR</span><div><strong>LIFE RESET</strong><small>Ton aventure, à ton rythme</small></div></div>
+    <button id="backupBtn" class="icon-btn" aria-label="Sauvegarder ou restaurer" title="Sauvegarde">↥</button>
+  </header>
+
+  <main class="shell">
+    <section class="welcome">
+      <div><p class="eyebrow" id="todayLabel">TON TABLEAU DE BORD</p><h1>Reprends le contrôle.</h1><p class="muted">De petits efforts, répétés. Une vraie évolution.</p></div>
+      <div class="level-chip"><span>RANG</span><strong id="rank">F</strong></div>
+    </section>
+
+    <section class="profile card">
+      <div class="profile-head">
+        <div><p class="eyebrow">TON PERSONNAGE</p><h2 id="playerName">L'Éveilleur</h2><p class="muted" id="levelText">Niveau 1 · Novice polyvalent</p></div>
+        <div class="level-number"><small>NIVEAU</small><strong id="level">1</strong></div>
+      </div>
+      <div class="xp-row"><span>Expérience</span><strong id="xpText">0 / 100 XP</strong></div>
+      <div class="progress"><span id="xpBar"></span></div>
+      <div class="stats-inline"><div><strong id="totalXp">0</strong><small>XP total</small></div><div><strong id="daysActive">0</strong><small>Jours actifs</small></div><div><strong id="completedCount">0</strong><small>Quêtes réussies</small></div></div>
+    </section>
+
+    <nav class="tabs" aria-label="Navigation">
+      <button class="tab active" data-tab="quests">Quêtes</button>
+      <button class="tab" data-tab="profile">Profil</button>
+      <button class="tab" data-tab="report">Rapport</button>
+    </nav>
+
+    <section id="questsView" class="view active">
+      <div class="section-head"><div><p class="eyebrow">JOURNAL DE MISSION</p><h2>Quêtes du jour</h2></div><span class="date-pill" id="datePill"></span></div>
+      <div class="daily-progress"><div><strong id="dailyCount">0 / 3</strong><span class="muted">missions principales</span></div><div class="progress slim"><span id="dailyBar"></span></div></div>
+      <div id="dailyQuests" class="quest-list"></div>
+      <div class="section-head weekly-head"><div><p class="eyebrow">OBJECTIFS DE LA SEMAINE</p><h2>Quêtes hebdomadaires</h2></div></div>
+      <div id="weeklyQuests" class="quest-list"></div>
+      <div class="section-head"><div><p class="eyebrow">À TON INITIATIVE</p><h2>Quêtes bonus</h2></div><button id="addQuestBtn" class="text-btn">+ Ajouter</button></div>
+      <div id="bonusQuests" class="quest-list"></div>
+      <p class="footnote">Le repos compte aussi. Aucune pénalité si une quête n'est pas terminée.</p>
+    </section>
+
+    <section id="profileView" class="view">
+      <div class="section-head"><div><p class="eyebrow">PROGRESSION</p><h2>Caractéristiques</h2></div></div>
+      <div id="attributes" class="card attribute-card"></div>
+      <div class="card mini-card"><p class="eyebrow">RÈGLES DE PROGRESSION</p><p>Chaque 100 XP gagnés dans une spécialité augmente sa caractéristique d'un point. Le niveau général progresse avec l'XP totale.</p><p class="muted">Coût du prochain niveau : 100 XP au niveau 1, puis +25 XP par niveau.</p></div>
+      <div class="section-head"><div><p class="eyebrow">HISTORIQUE</p><h2>Derniers jours</h2></div></div>
+      <div id="history" class="card history"></div>
+    </section>
+
+    <section id="reportView" class="view">
+      <div class="section-head"><div><p class="eyebrow">FIN DE JOURNÉE</p><h2>Rapport de mission</h2></div></div>
+      <div class="card report-card">
+        <p class="muted">Ajoute quelques précisions, puis génère un résumé à me transmettre dans ChatGPT. Le rapport inclut tes quêtes, XP et ressentis.</p>
+        <label for="mood">Humeur du jour</label><div class="mood-options" id="moodOptions"><button data-mood="1">1</button><button data-mood="2">2</button><button data-mood="3">3</button><button data-mood="4">4</button><button data-mood="5" class="selected">5</button></div>
+        <label for="energy">Énergie / fatigue</label><select id="energy"><option>Bonne énergie</option><option>Énergie moyenne</option><option>Fatigué</option><option>Très fatigué</option></select>
+        <label for="notes">Commentaire / difficultés / victoire du jour</label><textarea id="notes" rows="4" placeholder="Ex. : bonne séance, mais grosse fatigue après le travail..."></textarea>
+        <button id="generateReport" class="primary-btn">Générer mon rapport</button>
+        <div id="reportResult" class="report-result hidden"><div class="result-head"><strong>Ton rapport est prêt</strong><span>À envoyer dans ChatGPT</span></div><textarea id="reportText" rows="13" readonly></textarea><button id="copyReport" class="primary-btn">Copier le rapport</button><p id="copyStatus" class="muted status" aria-live="polite"></p></div>
+      </div>
+    </section>
+
+    <footer><span>Life Reset · Mode normal</span><button id="resetDay" class="text-btn">Réinitialiser les quêtes du jour</button></footer>
+  </main>
+
+  <dialog id="questDialog">
+    <form method="dialog" id="questForm">
+      <div class="dialog-head"><h2>Nouvelle quête bonus</h2><button class="icon-btn" value="cancel" aria-label="Fermer">×</button></div>
+      <label for="questTitle">Nom de la quête</label><input id="questTitle" maxlength="70" required placeholder="Ex. : 15 minutes de lecture">
+      <label for="questReward">Récompense XP</label><select id="questReward"><option value="5">5 XP</option><option value="10" selected>10 XP</option><option value="15">15 XP</option><option value="20">20 XP</option><option value="30">30 XP</option></select>
+      <label for="questStat">Caractéristique associée</label><select id="questStat"><option value="discipline">Discipline</option><option value="intelligence">Intelligence</option><option value="force">Force</option><option value="vitalite">Vitalité</option><option value="richesse">Richesse</option><option value="maitrise">Maîtrise</option></select>
+      <button class="primary-btn" value="save" id="saveQuest">Ajouter la quête</button>
+    </form>
+  </dialog>
+
+  <dialog id="backupDialog">
+    <form method="dialog">
+      <div class="dialog-head"><h2>Sauvegarde</h2><button class="icon-btn" value="cancel">×</button></div>
+      <p class="muted">Tes données restent sur cet appareil. Exporte régulièrement une copie pour ne rien perdre.</p>
+      <button type="button" id="exportBtn" class="primary-btn">Exporter ma sauvegarde</button>
+      <label class="file-label" for="importFile">Restaurer une sauvegarde</label><input id="importFile" type="file" accept="application/json">
+      <p class="footnote">La restauration remplace les données actuellement enregistrées.</p>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
